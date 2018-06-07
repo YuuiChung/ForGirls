@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+
+	<!-- 配置为开发模式 -->
+	<constant name="struts.devMode" value="true" />
+	<!-- json-default 支持json返回类型  具体实现类: org.apache.struts2.json.JSONResult -->
+	<package name="shop" extends="json-default">
+		<global-results>
+			<result name="index" type="redirect">/index.jsp</result>
+			<result name="error">/error.jsp</result>
+			<result name="ulogin" type="redirect">/ulogin.jsp</result>
+			<result name="stream" type="stream">
+				<param name="inputName">inputStream</param>
+			</result>
+		</global-results>
+		<!-- 配置异常和处理页面 -->
+		<global-exception-mappings>
+			<exception-mapping result="error" exception="java.lang.Exception"></exception-mapping>
+		</global-exception-mappings>
+		
+		<!-- 整合action交给spring创建,通过 id获取相应的action   class="cn.it.shop.action.CategoryAction" -->
+		<action name="category_*" class="categoryAction" method="{1}">
+		<!-- 整合action交给spring创建,通过 id获取相应的action   class="cn.it.shop.action.CategoryAction" -->
+			<result name="pageModel" type="json">
+				<param name="root">pageModel</param>
+				<param name="excludeProperties">
+					rows\[\d+\]\.account.pass,
+					rows\[\d+\]\.account.name,
+					rows\[\d+\]\.account.roleSet,
+					rows\[\d+\]\.account.authorities,
+					rows\[\d+\]\.account.password,
+				</param>
+			</result>
+			<result name="jsonList" type="json">
+				<param name="root">jsonList</param>
+				<param name="excludeProperties">
+					\[\d+\]\.account
+				</param>
+			</result>
+		</action>
+
+		<action name="account_*" class="accountAction" method="{1}">
+			<result name="grantRole">/WEB-INF/account/grantRole.jsp</result>
+			<result name="jsonList" type="json">
+				<param name="root">jsonList</param>
+				<param name="excludeProperties">
+					\[\d+\]\.pass,
+					\[\d+\]\.name
+				</param>
+			</result>
+			<result name="pageModel" type="json">
+				<param name="root">pageModel</param>
+				<param name="includeProperties">
+					rows\[\d+\]\.id,rows\[\d+\]\.name,rows\[\d+\]\.login,total		
+				</param>
+			</result>
+		</action>
+
+		<action name="product_*" class="productAction" method="{1}">
+			<result name="pageModel" type="json">
+				<param name="root">pageModel</param>
+				<param name="excludeProperties">
+					rows\[\d+\]\.category\.account,
+					rows\[\d+\]\.date
+				</param>
+			</result>
+			<result name="detail">/detail.jsp</result>
+		</action>
+
+		<action name="send_*_*" class="sendAction">
+			<result name="send">/WEB-INF/{1}/{2}.jsp</result>
+		</action>
+
+		<action name="sorder_*" class="sorderAction" method="{1}">
+			<result name="showCar" type="redirect">/showCar.jsp</result>
+			<result name="jsonList" type="json"></result>
+		</action>
+
+		<action name="forder_*" class="forderAction" method="{1}">
+			<result name="bank" type="redirect">/user/bank.jsp</result>
+		</action>
+
+		<action name="pay_*" class="payAction" method="{1}">
+			<result name="pay">/user/pay.jsp</result>
+			<result name="result">/user/result.jsp</result>
+		</action>
+
+		<action name="user_*" class="userAction" method="{1}">
+			<result name="goURL" type="redirect">${#session.goURL}</result>
+		</action>
+		
+		<action name="role_*" method="{1}" class="cn.it.shop.action.RoleAction">
+			<result name="pageModel" type="json">
+				<param name="root">pageModel</param>
+				<param name="excludeProperties">
+					rows\[\d+\]\.privilegeSet
+				</param>
+			</result>
+		</action>
+		<action name="privilege_*" method="{1}" class="cn.it.shop.action.PrivilegeAction">
+			<result name="jsonList" type="json">
+				<param name="root">jsonList</param>
+				<param name="excludeProperties">
+					\[\d+\]\.parent,
+					\[\d+\]\.roleSet,
+					\[\d+\]\.children\[\d+\]\.parent,
+					\[\d+\]\.children\[\d+\]\.children,
+					\[\d+\]\.children\[\d+\]\.roleSet,
+					\[\d+\]\.children\[\d+\]\.state
+				</param>
+			</result>
+		</action>
+	</package>
+</struts>    

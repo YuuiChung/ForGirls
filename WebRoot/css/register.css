@@ -1,0 +1,38 @@
+#register {
+	padding-left: 180px;
+	margin: 5px auto;
+}
+
+#register #bg {
+	background-image: url(/shopping/images/register/board_bg.gif);
+	background- repeat: repeat-y;
+	padding: 30px 0px;
+}
+
+#register form div {
+	margin: 0px 0px 30px 130px;
+}
+
+#register form div span {
+	margin-left: 5px;
+}
+
+#register form div input {
+	width: 130px;
+}
+
+#register form #sub {
+	width: 103px;
+	height: 26px;
+	margin-left: 70px;
+}
+form label{
+  	color: red;
+  	background-image:url("images/error.png");
+  	background-repeat: no-repeat;
+  	padding-left: 20px;
+}
+.valid{
+	background-image: url("images/right.png");
+	background-repeat: no-repeat;
+}

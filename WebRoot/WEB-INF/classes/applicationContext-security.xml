@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns="http://www.springframework.org/schema/security" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/security 
+	http://www.springframework.org/schema/security/spring-security-3.2.xsd
+	">
+
+	<!-- 1.2: 认证管理器,配置了管理员与角色的关系 -->
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider user-service-ref="accountService" />
+	</authentication-manager>
+
+	<http>
+		<access-denied-handler ref="auccessDeniedPage" />
+		<custom-filter ref="filterSecurityInterceptor" before="FILTER_SECURITY_INTERCEPTOR" />
+		<form-login login-processing-url="/login.action"
+			default-target-url="/send_public_aindex.action" password-parameter="pass"
+			username-parameter="login" authentication-failure-handler-ref="authenticationFailure" login-page="/alogin.jsp" />
+		<!-- 注销也是由,Security框架来实现,LogoutFilter -->
+		<logout logout-success-url="/alogin.jsp" />
+	</http>
+	<!-- 可以显示过滤链 -->
+	<debug />
+
+	<!-- 配置 验证过滤器, 此过滤器取代系统的XML权限过滤 , 此过滤器配置完毕之后存放到 系统缺省的过滤链中 -->
+	<beans:bean id="filterSecurityInterceptor"
+		class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
+		<!-- 需要认证管理器, 通过它可以获取 管理员已经拥有的角色信息 -->
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="accessDecisionManager" ref="accessDecisionManager" />
+		<beans:property name="securityMetadataSource" ref="urlService" />
+	</beans:bean>
+</beans:beans>
